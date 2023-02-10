@@ -30,7 +30,7 @@ def main_Fitness_Skenderija():
         for clan_teretane in lista_clanova_za_sms:
             # Loginuje se na bh Telekom web stranicu
             # Šalje se poruka sljedećem članu
-            bh_telekom.send_notification(clan_teretane, "fitness_skenderija", dan, proba)
+            poruka = bh_telekom.send_notification(clan_teretane, "fitness_skenderija", dan, proba)
             kome += f"{clan_teretane['imePrezime']}({clan_teretane['brojTelefona']})  "
 
         # Zatvaranje browsera

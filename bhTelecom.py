@@ -71,6 +71,8 @@ class BHTelecom:
         sleep(3)
         print(message + "\n================================================================")
 
+        return message
+
     def __odredjivanje_poruke_FitnessSkenderija(self, clan_teretane, dan):
         if clan_teretane['spol'] == "male":
             prvi_dio = "Poštovani"
