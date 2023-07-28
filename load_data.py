@@ -85,6 +85,7 @@ class BazaPodatakaClanova:
 
         database.session.commit()
 
+
     def __trazi_spol_preko_interneta(self, ime):
         parameters = {
             "name": ime,

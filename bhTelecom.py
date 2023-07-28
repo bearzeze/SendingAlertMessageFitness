@@ -18,7 +18,7 @@ class BHTelecom:
         caps["pageLoadStrategy"] = "none"
         self.driver = webdriver.Chrome(executable_path=chromedriver_path, options=op, desired_capabilities=caps)
 
-    def user_login(self, BROJ_TELEFONA_ZA_LOGIN, PASSWORD_ZA_LOGIN):
+    def user_login(self, broj_telefona_login, password_login):
         self.driver.get(url=BH_TELEKOM_URL)
         sleep(6)
         prijava = self.driver.find_element(By.XPATH,
@@ -27,11 +27,11 @@ class BHTelecom:
         sleep(3)
         # Upisivanje username i passworda
         username = self.driver.find_element(By.ID, 'username_2')
-        username.send_keys(BROJ_TELEFONA_ZA_LOGIN)
+        username.send_keys(broj_telefona_login)
         sleep(1)
 
         password = self.driver.find_element(By.ID, 'password')
-        password.send_keys(PASSWORD_ZA_LOGIN)
+        password.send_keys(password_login)
         sleep(1)
 
         # Prijavi se
@@ -44,7 +44,7 @@ class BHTelecom:
 
     def send_notification(self, clan, fitness_ili_bjj, dan, proba):
         self.driver.get(url="https://moj.bhtelecom.ba/web/guest/posalji-poruku")
-        sleep(2)
+        sleep(3)
 
         primatelj = self.driver.find_element(By.ID, 'primatelj')
         primatelj.send_keys(clan['brojTelefona'].strip())
@@ -76,22 +76,32 @@ class BHTelecom:
     def __odredjivanje_poruke_FitnessSkenderija(self, clan_teretane, dan):
         if clan_teretane['spol'] == "male":
             prvi_dio = "Poštovani"
-            ponuda = "mjesečna članarina 40 KM,\n- polugodišnja članarina 200 KM,\n- godišnja članarina 300 KM"
+            ponuda = "mjesečna članarina 50 KM,\n- polugodišnja članarina 250 KM,\n- godišnja članarina 400 KM"
 
         else:
             prvi_dio = "Poštovana"
-            ponuda = "mjesečna članarina 30 KM,\n- polugodišnja članarina 150 KM,\n- godišnja članarina 250 KM"
+            ponuda = "mjesečna članarina 40 KM,\n- polugodišnja članarina 200 KM,\n- godišnja članarina 300 KM"
 
         if clan_teretane['napomena'].lower() == 'brotherhood':
             ponuda = "mjesečna članarina 20 KM,\n- polugodišnja članarina 120 KM,\n- godišnja članarina 240 KM"
 
-        if dan == 1:
-            danStr = "sutra"
-        elif dan == 2:
-            danStr = "prekosutra"
+        datum_isteka = f"{clan_teretane['datumIstekaClanarine'][:-1]}"
 
-        return f"{prvi_dio} {clan_teretane['imePrezime'].strip()}, Vaša članarina ističe {danStr} " \
-               f"({clan_teretane['datumIstekaClanarine'][:-1]}). Članarinu možete produžiti u prostorijama" \
+        if dan >= 0:
+            datum_isteka = f"({datum_isteka})"
+            danStr = "ističe "
+            if dan == 0:
+                danStr += "danas"
+            elif dan == 1:
+                danStr += "sutra"
+            elif dan == 2:
+                danStr += "prekosutra"
+        else:
+            datum_isteka += ". godine"
+            danStr = "je istekla"
+
+        return f"{prvi_dio} {clan_teretane['imePrezime'].strip()}, Vaša članarina {danStr} " \
+               f"{datum_isteka}. Članarinu možete produžiti u prostorijama" \
                f" Fitness Skenderija prema sljedećoj ponudi:\n- {ponuda}.\n\nVaša Fitness Skenderija." \
 
     def __odredjivanje_poruke_BJJBrotherhood(self, clan_kluba):
@@ -103,12 +113,12 @@ class BHTelecom:
             prvi_dio = "Poštovana"
 
         drugi_dio = "Vaša članarina"
-        ponuda = "\n- mjesečna članarina 40 KM,\n- polugodišnja članarina 180 KM,\n- godišnja članarina 300 KM"
+        ponuda = "\n- mjesečna članarina 50 KM,\n- polugodišnja članarina 250 KM,\n- godišnja članarina 400 KM"
 
         # Roditeljima Kids Brotherhood-a
         if clan_kluba['napomena'].lower() == 'kids':
             drugi_dio = "članarina Vašeg djeteta"
-            ponuda = "\n- mjesečna članarina 30 KM,\n- polugodišnja članarina 180 KM,\n- godišnja članarina 300 KM"
+            ponuda = "\n- mjesečna članarina 40 KM,\n- polugodišnja članarina 200 KM,\n- godišnja članarina 300 KM"
 
         return f"{prvi_dio} {clan_kluba['imePrezime'].strip()}, {drugi_dio} ističe sutra " \
                f"({clan_kluba['datumIstekaClanarine'][:-1]}). Članarinu možete produžiti u prostorijama" \

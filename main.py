@@ -11,9 +11,11 @@ BJJ_BROTHERHOOD_SHEETS_ENDPOINT = "https://api.sheety.co/ee1d18fbccc08c72a4afafa
 def main_Fitness_Skenderija():
     # da li je proba ili slanje
     proba = "ne"
-    # Koji se datum posmatra - uglavnom sutrasnji da se član napomene na vrijeme
+    # Koji se datum posmatra - dan = 0 danas, dan = 1 sutra, dan = -1 jučer itd...
     dan = 1
     datum_provjere = dt.datetime.now() + dt.timedelta(days=dan)
+    print(f"Posmatra se datum: {datum_provjere.day}.{datum_provjere.month}.{datum_provjere.year}\n")
+
 
     # Formira se baza podataka članova skenderija
     fitnes_skenderija = BazaPodatakaClanova(FITNESS_SKENDERIJA_SHEETS_ENDPOINT)
